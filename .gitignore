@@ -1,7 +1,9 @@
 # ignore all pyc files.
 *.pyc
 .idea
-
+.vscode/
+.ipynb_checkpoints/
+venv/
 /game/
 /check_save_transitions.py
 /deep_q_network.py
