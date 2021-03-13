@@ -3,10 +3,16 @@ import sys
 
 from scipy import ndimage
 # from utree_training import Problem_flappyBird, Agent_CUT as Agent
-from utree_training import Problem_flappyBird, Agent_oracle as Agent
-from utree_training.test import opts
+import Problem_flappyBird, Agent_oracle as Agent
+import optparse
+# import test.opts
 # from utree_training import Problem_flappyBird, Agent_regression as Agent
-import game.wrapped_flappy_bird as game
+# sys.path.append("../game/")
+# from ..game import wrapped_flappy_bird #  as game
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from game import wrapped_flappy_bird as game
+
 import numpy as np
 import pickle
 import csv
@@ -142,22 +148,32 @@ def save_csv_temp_obervations(datas, csv_name):
     for data in datas:
       writer.writerow(data)
 
+optparser = optparse.OptionParser()
+optparser.add_option("-m", "--max_node_hist", dest="MAX_NODE_HIST", default=3000,
+                     help="max number of instance in every node (default = 10000)")
+optparser.add_option("-c", "--check_fringe_freq", dest="CHECK_FRINGE_FREQ", default=300,
+                     help="check fringe frequent (default = 100)")
+optparser.add_option("-d", "--directory_of_games", dest="GAME_DIRECTORY", default="",
+                     help="games dir of all the games")
+
+opts = optparser.parse_args()[0]
+
 if __name__ == "__main__":
   ice_hockey_problem = Problem_flappyBird.flappyBird(games_directory=opts.GAME_DIRECTORY)
   CUTreeAgent = Agent.CUTreeAgent(problem=ice_hockey_problem, max_hist=opts.MAX_NODE_HIST,
                                   check_fringe_freq=opts.CHECK_FRINGE_FREQ, is_episodic=0)
-  # CUTreeAgent.utree.fromcsvFile(TREE_PATH + "Game_File_" + sys.argv[1] + ".csv")
-  CUTreeAgent.episode(int(sys.argv[1]))
+  CUTreeAgent.utree.fromcsvFile(TREE_PATH + "Game_File_" + sys.argv[1] + ".csv")
+  # CUTreeAgent.episode(int(sys.argv[1]))
   # CUTreeAgent.utree.fromcsvFile(TREE_PATH + "Game_File_" + sys.argv[1])
-  # CUTreeAgent.utree = pickle.load(open(TREE_PATH + "Game_File_" + sys.argv[1] + '.p', mode='rb'))
-  # try:
-  #   jvm.start()
-  # clf = pickle.load(open("../comparison-tree-regression/save_classifier/flappy-fb-record-10fold9.model", 'rb'))
+  CUTreeAgent.utree = pickle.load(open(TREE_PATH + "Game_File_" + sys.argv[1] + '.p', mode='rb'))
+  try:
+    jvm.start()
+    # clf = pickle.load(open("../comparison-tree-regression/save_classifier/flappy-fb-record-10fold9.model", 'rb'))
     # classifier = Classifier(jobject=serialization.read("../comparison-tree-regression/save_classifier/"
     #                                                    "flappybird-m5p-weka-record-10fold9.model"))
     # loader = Loader(classname="weka.core.converters.CSVLoader")
-  playGame(agent=CUTreeAgent)
-  # except Exception as e:
-  #   print(traceback.format_exec())
-  # finally:
-  #   jvm.stop()
+    playGame(agent=CUTreeAgent)
+  except Exception as e:
+    print(traceback.format_exec())
+  finally:
+    jvm.stop()

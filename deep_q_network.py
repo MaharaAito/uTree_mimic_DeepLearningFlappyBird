@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-import tensorflow as tf
+# import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.compat.v1.disable_eager_execution()
 import cv2
 import sys
 import pickle
@@ -322,6 +324,11 @@ def playGame(gameid):
 
 def main():
     playGame(int(sys.argv[1]))
+    # for i in range(0,1001):
+    #     print('game number:', i)
+    #     playGame(i)
+    #     continue
+        
 
 
 if __name__ == "__main__":

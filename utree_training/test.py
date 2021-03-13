@@ -1,8 +1,9 @@
 import optparse
 # from utree_training import Problem_flappyBird, Agent_CUT as Agent
-from utree_training import Problem_flappyBird, Agent_oracle as Agent
+# from utree_training import Problem_flappyBird, Agent_oracle as Agent
 # from utree_training import Problem_flappyBird, Agent_regression as Agent
-# import Problem_flappyBird, Agent_oracle as Agent
+import Problem_flappyBird, Agent_oracle as Agent
+import importlib
 # import Problem_flappyBird, Agent_regression as Agent
 import sys
 
@@ -21,3 +22,6 @@ if __name__ == "__main__":
   CUTreeAgent = Agent.CUTreeAgent(problem=ice_hockey_problem, max_hist=opts.MAX_NODE_HIST,
                                   check_fringe_freq=opts.CHECK_FRINGE_FREQ, is_episodic=0)
   CUTreeAgent.episode(int(sys.argv[1]))
+  # for i in range(0,1001):
+  #   CUTreeAgent.episode(i)
+

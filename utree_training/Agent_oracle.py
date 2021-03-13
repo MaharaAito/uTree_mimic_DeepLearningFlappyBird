@@ -8,7 +8,7 @@ import inspect
 import random
 import csv
 import seaborn as sns
-from utree_training import C_UTree_oracle as C_UTree
+import C_UTree_oracle as C_UTree
 # import C_UTree_oracle as C_UTree
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
@@ -123,7 +123,7 @@ class CUTreeAgent:
     """
     
     game_directory = self.problem.games_directory
-    
+    print(game_directory)
     game_dir_all = os.listdir(game_directory)
     
     count = 0
@@ -134,9 +134,10 @@ class CUTreeAgent:
     RMSElist = [str(checkpoint), "RMSE"]
     RAElist = [str(checkpoint), "RAE"]
     RRSElist = [str(checkpoint), "RRSE"]
+    print('checkpoint:', checkpoint)
     # checkpoint = 26
-    if checkpoint > 0:
-      self.utree.fromcsvFile(TREE_PATH + "Game_File_" + str(checkpoint) + ".csv")
+    # if checkpoint > 0:
+      # self.utree.fromcsvFile(TREE_PATH + "Game_File_" + str(checkpoint-1) + ".csv")
       # return
     
     for game_dir in game_dir_all:
@@ -154,8 +155,8 @@ class CUTreeAgent:
       beginflag = False
       count += 1
       
-      # if count < 30:
-      #   continue
+      if count < 30:
+        continue
         
       for index in range(0, event_number):
         # action = self.problem.actions[
@@ -250,18 +251,23 @@ class CUTreeAgent:
             continue
 
       self.utree.significanceLevel /= RDEC
-      
+      print('hoge')
+      print("isEpisodic:", self.problem.isEpisodic)
       if self.problem.isEpisodic:
         if checkpoint <= count:
-          influence = self.utree.getFeatureInfluence()
-          pickle.dump(influence, open(Q_PATH + "influence.p", 'wb'))
-          return
-          self.utree.print_tree()
-          # pickle.dump(self.utree, open(TREE_PATH + "Game_File_" + str(count) + '.p', 'wb'))
-          # exit(0)
-          self.utree.tocsvFile(TREE_PATH + "Game_File_" + str(count) + ".csv")
-          exit(0)
-          # self.utree.tocsvFile(HOME_PATH + "Game_File_" + str(count) + ".csv")
+          # if count % 50 == 0:
+            print('checkpoint <= count: true')
+            influence = self.utree.getFeatureInfluence()
+            pickle.dump(influence, open(Q_PATH + "influence.p", 'wb'))
+            # return
+            self.utree.print_tree()
+            pickle.dump(self.utree, open(TREE_PATH + "Game_File_" + str(count) + '.p', 'wb'))
+            # return
+            # exit(0)
+            self.utree.tocsvFile(TREE_PATH + "Game_File_" + str(count) + ".csv")
+            # exit(0)
+            return
+            # self.utree.tocsvFile(HOME_PATH + "Game_File_" + str(count) + ".csv")
         # print out tree info
         print("Game File " + str(count))
         print("")
